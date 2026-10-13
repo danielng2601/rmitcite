@@ -1,0 +1,1090 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RMIT Harvard Cite</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{
+  --bg:#F6F7F9; --surface:#FFFFFF; --ink:#151922; --muted:#5E6675; --line:#DCE0E7;
+  --accent:#D6001C; --accent-ink:#FFFFFF; --warn:#8A5A00; --warn-bg:#FFF4D6; --ok:#0E6B3A; --ok-bg:#EBF9F1;
+  --link:#0B57D0;
+  --ui:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --serif:"Times New Roman", Times, Georgia, serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#101319; --surface:#181C25; --ink:#E9ECF2; --muted:#9AA3B2; --line:#2A3040;
+  --accent:#FF4A5E; --accent-ink:#1A0508; --warn:#F2C766; --warn-bg:#2E2610; --ok:#5ED394; --ok-bg:#0F291C;
+  --link:#6BA3FF;
+  color-scheme:dark;
+}}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 var(--ui);padding-inline:16px;padding-block:28px 64px}
+main{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
+header{display:flex;flex-direction:column;gap:4px}
+h1{font:600 1.55rem/1.2 var(--ui);margin:0;letter-spacing:-.01em}
+h1 span{color:var(--accent)}
+h2{font:600 .78rem/1 var(--ui);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+.lede{margin:4px 0 0;color:var(--muted);font-size:.95rem}
+.lookup{display:flex;gap:8px;flex-wrap:wrap}
+.lookup input{flex:1 1 280px;min-width:0}
+input,textarea,select{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px 12px;width:100%}
+textarea{resize:vertical;min-height:64px}
+input:focus-visible,textarea:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button{font:500 .92rem var(--ui);border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:9px 15px;cursor:pointer;transition:all .15s}
+button:hover{border-color:var(--muted)}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+button.primary:hover{filter:brightness(.92)}
+button:disabled{opacity:.6;cursor:wait}
+
+.status{min-height:1.4em;margin:8px 0 0;font-size:.88rem;color:var(--muted);display:flex;align-items:center;gap:6px}
+.status.err{color:var(--warn)}
+.status.ok{color:var(--ok)}
+.status .spinner{display:inline-block;width:12px;height:12px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips button{padding:7px 12px;font-size:.88rem}
+.chips button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.format-bar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:12px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  padding:12px 16px;
+  border-radius:8px;
+  font-size:.88rem;
+}
+.format-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.format-group select{padding:6px 10px;width:auto;font-size:.85rem}
+.badge-tip{font-size:.76rem;background:var(--ok-bg);color:var(--ok);padding:2px 8px;border-radius:4px;font-weight:600}
+
+.result{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:18px;min-width:0}
+.preview-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+
+.cite-box{
+  background:rgba(127,127,127,0.04);
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:16px 20px;
+}
+.cite{
+  font-family:var(--serif);
+  font-size:1.08rem;
+  line-height:1.65;
+  margin:0;
+  padding-left:2.5rem;
+  text-indent:-2.5rem;
+  overflow-wrap:anywhere;
+  color:var(--ink);
+}
+.cite i, .cite em {
+  font-style:italic !important;
+}
+.cite a{color:var(--link);text-decoration:underline;text-underline-offset:2.5px;word-break:break-all}
+.cite a:hover{filter:brightness(1.2)}
+
+.intext{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-family:var(--serif);font-size:1rem;line-height:1.5;margin:0}
+.intext dt{font:500 .72rem/1.9 var(--ui);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.intext dd{margin:0;min-width:0;overflow-wrap:anywhere;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.copy-inline{font-size:.78rem;padding:2px 8px;border-radius:4px;color:var(--muted);border:1px solid var(--line);background:transparent}
+.copy-inline:hover{color:var(--ink);border-color:var(--muted)}
+
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.warn{font-size:.85rem;color:var(--warn);background:var(--warn-bg);border-radius:6px;padding:6px 12px;margin:0}
+
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.f{display:flex;flex-direction:column;gap:5px;min-width:0}
+.f.wide{grid-column:1/-1}
+.f label,.f .lab{font-size:.85rem;font-weight:500}
+.f small{color:var(--muted);font-size:.78rem}
+.check{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--muted);cursor:pointer}
+.check input{width:auto;cursor:pointer}
+@media (max-width:560px){.grid{grid-template-columns:1fr}}
+
+.list{display:flex;flex-direction:column;gap:2px}
+.item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:start;padding:12px 0;border-bottom:1px solid var(--line)}
+.item .cite{font-size:1.02rem;padding-left:2rem;text-indent:-2rem}
+.item-actions{display:flex;gap:6px}
+.item button{padding:4px 8px;font-size:.8rem;color:var(--muted)}
+.item button:hover{color:var(--ink)}
+.empty{color:var(--muted);margin:0;padding:14px 0;font-size:.9rem}
+footer{color:var(--muted);font-size:.82rem;line-height:1.6;border-top:1px solid var(--line);padding-top:16px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>RMIT <span>Harvard</span> Cite</h1>
+    <p class="lede">Trích dẫn chuẩn xác theo RMIT Easy Cite (Thư viện Đại học RMIT).</p>
+  </header>
+
+  <section aria-label="Tìm nguồn">
+    <form class="lookup" id="lookupForm">
+      <input id="q" type="text" autocomplete="off" spellcheck="false" placeholder="Dán DOI (10.xxxx/...) hoặc link tài liệu (https://...)" aria-label="DOI hoặc link">
+      <button class="primary" id="go" type="submit">Tìm thông tin</button>
+    </form>
+    <div class="status" id="status" role="status">Dán link hoặc DOI vào ô trên rồi bấm Tìm thông tin (hoặc Enter).</div>
+  </section>
+
+  <section aria-label="Tùy chọn văn bản">
+    <div class="format-bar">
+      <div class="format-group">
+        <label for="fontMode"><strong>Chế độ Paste vào Docs:</strong></label>
+        <select id="fontMode">
+          <option value="inherit" selected>⚡ Tự khớp Font &amp; Cỡ chữ của Docs (Khuyên dùng)</option>
+          <option value="fixed">Cố định font tùy chọn (Word/Docs)</option>
+        </select>
+        <span class="badge-tip" id="modeTip">Docs đang dùng font gì sẽ nhận đúng font đó!</span>
+      </div>
+
+      <div class="format-group" id="customFontOptions" style="display:none">
+        <select id="fontFamilySel">
+          <option value="'Times New Roman', Times, serif" selected>Times New Roman</option>
+          <option value="Arial, sans-serif">Arial</option>
+          <option value="Calibri, sans-serif">Calibri</option>
+        </select>
+        <select id="fontSizeSel">
+          <option value="12" selected>12pt (Chuẩn bài RMIT)</option>
+          <option value="14">14pt</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <section aria-label="Loại tài liệu">
+    <h2>Loại tài liệu</h2>
+    <div class="chips" id="types"></div>
+  </section>
+
+  <section class="result" aria-label="Kết quả trích dẫn">
+    <div class="preview-header">
+      <h2 style="margin:0">Reference list (Chuẩn RMIT Harvard)</h2>
+      <span style="font-size:0.8rem; color:var(--muted);" id="formatStatusText">Thụt lề treo 0.5 in (36pt)</span>
+    </div>
+
+    <div class="cite-box">
+      <p class="cite" id="out"></p>
+    </div>
+    
+    <dl class="intext">
+      <dt>Tường thuật</dt>
+      <dd><span id="narr"></span><button type="button" class="copy-inline" id="copyNarr">Copy</button></dd>
+      <dt>Trong ngoặc</dt>
+      <dd><span id="paren"></span><button type="button" class="copy-inline" id="copyParen">Copy</button></dd>
+    </dl>
+    
+    <p class="warn" id="warn" hidden></p>
+    
+    <div class="row">
+      <button class="primary" id="copy" type="button">📋 Copy cho Docs/Word (Giữ in nghiêng &amp; link)</button>
+      <button id="copyPlain" type="button">Copy chữ thường (Plain text)</button>
+      <button id="add" type="button">+ Lưu vào danh sách</button>
+    </div>
+  </section>
+
+  <section id="detailsSection" aria-label="Chi tiết chỉnh sửa">
+    <h2>Chi tiết dữ liệu (Sửa độc lập từng trường)</h2>
+    <div class="grid">
+      <div class="f wide" data-t="webpage journal book chapter report news">
+        <label for="authors" id="authorsLab">Tác giả</label>
+        <textarea id="authors" placeholder="Nguyen TH and Luu TMP&#10;hoặc Baird K, Nuhu N and Jiao L&#10;hoặc IMARC"></textarea>
+        <label class="check"><input type="checkbox" id="org"> Tác giả là tổ chức / Cơ quan / Tòa soạn báo (ví dụ: IMARC, Ninh Binh Newspaper)</label>
+      </div>
+      
+      <div class="f wide" data-t="webpage journal book chapter report news">
+        <label for="title" id="titleLab">Tiêu đề</label>
+        <input id="title" type="text">
+        <small id="titleHint"></small>
+      </div>
+      
+      <div class="f" data-t="webpage journal book chapter report news">
+        <label for="date" id="dateLab">Năm xuất bản</label>
+        <input id="date" type="text" placeholder="2026">
+      </div>
+      
+      <div class="f" data-t="webpage journal chapter report news">
+        <label for="container" id="containerLab">Tên ấn phẩm chứa</label>
+        <input id="container" type="text">
+        <small id="containerHint"></small>
+      </div>
+      
+      <div class="f wide" data-t="chapter">
+        <label for="editors">Biên tập viên (Editor), mỗi dòng một người</label>
+        <textarea id="editors" placeholder="Jiao L"></textarea>
+      </div>
+      
+      <div class="f" data-t="journal"><label for="volume">Volume (Tập)</label><input id="volume" type="text"></div>
+      <div class="f" data-t="journal"><label for="issue">Issue (Số - bỏ trống nếu chỉ có số tập)</label><input id="issue" type="text"></div>
+      <div class="f" data-t="journal chapter"><label for="pages" id="pagesLab">Trang / Mã bài viết</label><input id="pages" type="text" placeholder="303-332 hoặc zmae017"></div>
+      <div class="f" data-t="book chapter"><label for="edition">Edition (Ví dụ 2nd, 3rd - bỏ trống nếu bản 1)</label><input id="edition" type="text" placeholder="2nd"></div>
+      <div class="f" data-t="book chapter report"><label for="publisher">Nhà xuất bản (Publisher)</label><input id="publisher" type="text"></div>
+      <div class="f" data-t="book chapter"><label for="place">Nơi xuất bản (Bỏ trống nếu đã có DOI)</label><input id="place" type="text"></div>
+      <div class="f" data-t="journal book chapter report"><label for="doi">DOI hoặc Link DOI</label><input id="doi" type="text" placeholder="10.xxxx hoặc http://dx.doi.org/10.xxxx"></div>
+      
+      <div class="f wide" data-t="webpage journal news report">
+        <label for="url">URL (Đường dẫn trang web ở cuối)</label>
+        <input id="url" type="text" inputmode="url" placeholder="https://...">
+      </div>
+      
+      <div class="f" data-t="webpage journal news report"><label for="accessed">Ngày truy cập (accessed date)</label><input id="accessed" type="text" placeholder="20 July 2026"></div>
+    </div>
+  </section>
+
+  <section aria-label="Danh sách tài liệu đã lưu">
+    <h2>References đã lưu (Xếp A–Z tự động)</h2>
+    <div class="list" id="list"></div>
+    <div class="row" style="margin-top:14px">
+      <button id="copyAll" type="button" class="primary">📋 Copy toàn bộ danh sách (cho Docs/Word)</button>
+      <button id="clearAll" type="button" style="color:var(--warn)">Xoá toàn bộ</button>
+    </div>
+  </section>
+
+  <footer>
+    <strong>Quy chuẩn RMIT Easy Cite:</strong><br>
+    • <strong>Book:</strong> In nghiêng tên sách <code><i>Title of book</i></code>.<br>
+    • <strong>Journal article:</strong> Tiêu đề bài báo đặt trong nháy đơn <code>‘Title of article’</code> (chữ thẳng); tên tạp chí in nghiêng <code><i>Title of Journal</i></code>.<br>
+    • <strong>Book chapter:</strong> Tiêu đề chương đặt trong nháy đơn <code>‘Title of chapter’</code>; tên sách tuyển tập in nghiêng <code><i>Title of book</i></code>.<br>
+    • <strong>Webpage / Report:</strong> Tiêu đề trang web/báo cáo in nghiêng <code><i>Title</i></code>; tên website chữ thẳng.
+  </footer>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+const ORG_KEYWORDS = /\b(newspaper|news|agency|times|post|herald|journal|group|organization|organisation|ministry|department|university|institute|council|commission|bank|press|báo|tạp chí|đài|ban|bộ|cục|viện|trường|trung tâm|imarc|nhan dan|vietnamplus)\b/i;
+
+const VN_SURNAMES = new Set([
+  'nguyen', 'tran', 'le', 'pham', 'hoang', 'huynh', 'phan', 'vu', 'vo', 
+  'dang', 'bui', 'do', 'ho', 'ngo', 'duong', 'ly', 'dao', 'dinh', 'doan', 
+  'lam', 'trinh', 'mai', 'luu', 'cao', 'thai', 'ta', 'tong', 'ha', 'trieu'
+]);
+
+function stripDiacritics(str){
+  return (str || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
+
+function cleanLine(s){
+  s = (s || '').trim();
+  s = s.replace(/^(translated\s+by|translate\s+by|trans\.?\s+by|edited\s+by|ed\.?\s+by|written\s+by|authored\s+by|by|tác\s+giả:?|người\s+dịch:?)\s+/i, '').trim();
+  s = s.replace(/\s*\((translated|translator|trans\.?|edited|editor|ed\.?|biên\s*tập|dịch\s*giả)\)$/i, '').trim();
+  s = s.replace(/^(dr\.?|prof\.?|mr\.?|mrs\.?|ms\.?)\s+/i, '').trim();
+  return s;
+}
+
+function getInitialChars(words){
+  const parts = words.trim().split(/[\s.\-]+/).filter(Boolean);
+  return parts.map(p => {
+    if(p.length <= 4 && p === p.toUpperCase() && /^[A-Z]+$/.test(p)) return p;
+    return p[0].toUpperCase();
+  }).join('');
+}
+
+function parseSingleName(name){
+  name = cleanLine(name);
+  if(!name) return null;
+
+  if(name.includes(',')){
+    const idx = name.indexOf(',');
+    return {
+      fam: name.slice(0, idx).trim(),
+      ini: getInitialChars(name.slice(idx + 1))
+    };
+  }
+
+  const tokens = name.split(/\s+/).filter(Boolean);
+  if(tokens.length === 1) return { fam: tokens[0], ini: '' };
+
+  const lastToken = tokens[tokens.length - 1];
+
+  if(tokens.length > 1 && lastToken.length <= 4 && lastToken === lastToken.toUpperCase() && /^[A-Z]+$/.test(lastToken)){
+    return {
+      fam: tokens.slice(0, -1).join(' '),
+      ini: lastToken
+    };
+  }
+
+  const firstClean = stripDiacritics(tokens[0]);
+  const lastClean = stripDiacritics(tokens[tokens.length - 1]);
+  if(VN_SURNAMES.has(firstClean) && !VN_SURNAMES.has(lastClean)){
+    return {
+      fam: tokens[0],
+      ini: getInitialChars(tokens.slice(1).join(' '))
+    };
+  }
+
+  return {
+    fam: tokens[tokens.length - 1],
+    ini: getInitialChars(tokens.slice(0, -1).join(' '))
+  };
+}
+
+function parseAuthorsText(rawText){
+  if(!rawText) return [];
+  const lines = rawText.split(/\r?\n/).map(cleanLine).filter(Boolean);
+  const authors = [];
+
+  for(const line of lines){
+    if(line.includes(';')){
+      const parts = line.split(';').map(cleanLine).filter(Boolean);
+      for(let p of parts){
+        p = p.replace(/^(and|&)\s+/i, '').trim();
+        if(/\s+(?:and|&)\s+/i.test(p)){
+          const sub = p.split(/\s+(?:and|&)\s+/i);
+          sub.forEach(s => { if(cleanLine(s)) authors.push(cleanLine(s)); });
+        } else {
+          authors.push(p);
+        }
+      }
+      continue;
+    }
+
+    if(/(?:,\s*(?:and|&)\s+|\s+(?:and|&)\s+)/i.test(line)){
+      const parts = line.split(/(?:,\s*(?:and|&)\s+|\s+(?:and|&)\s+)/i);
+      const lastAuthor = cleanLine(parts[parts.length - 1]);
+      const preceding = parts.slice(0, -1);
+
+      for(const p of preceding){
+        const cleanedP = cleanLine(p);
+        if(!cleanedP) continue;
+
+        if(/\b[A-Z]{1,4},\s+[A-Za-z]/.test(cleanedP)){
+          const subParts = cleanedP.split(/(?<=[A-Za-z0-9.]),\s+(?=[A-Za-z])/);
+          subParts.forEach(sp => { if(cleanLine(sp)) authors.push(cleanLine(sp)); });
+        } else if(/\.,\s*/.test(cleanedP)){
+          const subParts = cleanedP.split(/(?<=\.),\s*/);
+          subParts.forEach(sp => { if(cleanLine(sp)) authors.push(cleanLine(sp)); });
+        } else {
+          authors.push(cleanedP);
+        }
+      }
+
+      if(lastAuthor) authors.push(lastAuthor);
+      continue;
+    }
+
+    if(/\b[A-Z]{1,4},\s+[A-Za-z]/.test(line)){
+      const subParts = line.split(/(?<=[A-Za-z0-9.]),\s+(?=[A-Za-z])/);
+      subParts.forEach(sp => { if(cleanLine(sp)) authors.push(cleanLine(sp)); });
+      continue;
+    }
+
+    authors.push(line);
+  }
+
+  return authors.map(parseSingleName).filter(Boolean);
+}
+
+const people = text => parseAuthorsText(text);
+const joinAnd = a => a.length < 2 ? (a[0] || '') : a.slice(0,-1).join(', ') + ' and ' + a[a.length-1];
+const nameStr = p => p.fam + (p.ini ? ' ' + p.ini : '');
+const yearOf = d => (String(d).match(/\b(\d{4})\b/) || [,'n.d.'])[1];
+const dateOf = d => {
+  d = String(d || '').trim(); if(!d) return 'n.d.';
+  const m = d.match(/^(\d{4})(?:-(\d{1,2})(?:-(\d{1,2}))?)?$/);
+  if(!m) return d;
+  if(m[3]) return +m[3] + ' ' + MONTHS[m[2]-1];
+  if(m[2]) return MONTHS[m[2]-1];
+  return m[1];
+};
+const plain = h => h.replace(/<[^>]+>/g,'').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&amp;/g,'&');
+
+function renderTitle(type, title) {
+  if (!title) return '';
+  const t = esc(title.trim());
+  switch (type) {
+    case 'book':
+    case 'report':
+    case 'webpage':
+      return `<i style="font-style: italic;">${t}</i>`;
+    case 'journal':
+    case 'chapter':
+    case 'news':
+      return `‘${t}’`;
+    default:
+      return t;
+  }
+}
+
+function renderContainer(type, container) {
+  if (!container) return '';
+  const c = esc(container.trim());
+  switch (type) {
+    case 'journal':
+    case 'chapter':
+    case 'news':
+      return `<i style="font-style: italic;">${c}</i>`;
+    case 'webpage':
+    case 'report':
+      return c.toLowerCase().endsWith('website') ? c : `${c} website`;
+    default:
+      return c;
+  }
+}
+
+function format(s){
+  const e = x => esc(String(x || '').trim());
+  const Y = yearOf(s.date);
+  const acc = (s.accessed || '').trim() ? e(s.accessed) : '';
+  const rawUrl = (s.url || '').trim();
+  const rawDoi = (s.doi || '').trim();
+
+  let A = '', inTextWho = '';
+  const isOrg = s.org || ORG_KEYWORDS.test((s.authors || '').trim());
+
+  if(isOrg){
+    A = inTextWho = esc((s.authors || '').trim());
+  } else {
+    const parsedAuthors = parseAuthorsText(s.authors);
+    if(parsedAuthors.length > 0){
+      A = esc(joinAnd(parsedAuthors.map(nameStr)));
+      if(parsedAuthors.length === 1){
+        inTextWho = esc(parsedAuthors[0].fam);
+      } else if(parsedAuthors.length === 2){
+        inTextWho = esc(parsedAuthors[0].fam + ' and ' + parsedAuthors[1].fam);
+      } else {
+        inTextWho = esc(parsedAuthors[0].fam + ' et al.');
+      }
+    } else {
+      A = inTextWho = esc((s.authors || '').trim());
+    }
+  }
+
+  let doiFormatted = '';
+  if(rawDoi){
+    if(/^https?:\/\//i.test(rawDoi)){
+      doiFormatted = `<a href="${rawDoi}" target="_blank" rel="noopener">${rawDoi}</a>`;
+    } else {
+      const cleanDoiCode = rawDoi.replace(/^doi:\s*/i, '');
+      doiFormatted = `doi:<a href="https://doi.org/${cleanDoiCode}" target="_blank" rel="noopener">${cleanDoiCode}</a>`;
+    }
+  }
+
+  const urlFormatted = rawUrl ? `<a href="${rawUrl}" target="_blank" rel="noopener">${rawUrl}</a>` : '';
+  const formattedTitle = renderTitle(s.type, s.title);
+  const formattedContainer = renderContainer(s.type, s.container);
+
+  let out = '';
+  const hasA = Boolean(A);
+
+  if(s.type === 'book'){
+    const edn = (s.edition || '').trim().replace(/\s*edn\.?$/i, '');
+    const pub = e((s.publisher || '').trim());
+    const pl = e((s.place || '').trim());
+    out = `${hasA ? A + ' (' + Y + ') ' : ''}${formattedTitle}`
+        + (edn ? `, ${e(edn)} edn` : '')
+        + (pub ? `, ${pub}` : '')
+        + (pl && !doiFormatted ? `, ${pl}` : '')
+        + (doiFormatted ? `, ${doiFormatted}` : '.');
+
+  } else if(s.type === 'journal'){
+    const vol = (s.volume || '').trim();
+    const iss = (s.issue || '').trim();
+    const p = (s.pages || '').trim();
+    let vip = '';
+    if(vol){
+      vip = iss ? `${vol}(${iss}):${p}` : (p ? `${vol}:${p}` : vol);
+    } else if(p){
+      vip = p;
+    }
+
+    const vipStr = vip ? `, ${e(vip)}` : '';
+    const doiStr = doiFormatted ? `, ${doiFormatted}` : (urlFormatted ? `, ${urlFormatted}` : '.');
+    out = `${hasA ? A + ' (' + Y + ') ' : ''}${formattedTitle}, ${formattedContainer}${vipStr}${doiStr}`;
+
+  } else if(s.type === 'chapter'){
+    const ed = people(s.editors);
+    const edStr = ed.length ? joinAnd(ed.map(nameStr)) + (ed.length > 1 ? ' (eds), ' : ' (ed), ') : '';
+    const edn = (s.edition || '').trim().replace(/\s*edn\.?$/i, '');
+    const pub = e((s.publisher || '').trim());
+    const pl = e((s.place || '').trim());
+    const p = e((s.pages || '').trim());
+    const pStr = p ? `, pp. ${p}` : '';
+
+    out = `${hasA ? A + ' (' + Y + ') ' : ''}${formattedTitle}`
+        + `, in ${edStr}${formattedContainer}`
+        + (edn ? `, ${e(edn)} edn` : '')
+        + (pub ? `, ${pub}` : '')
+        + (pl && !doiFormatted ? `, ${pl}` : '')
+        + pStr
+        + (doiFormatted ? `, ${doiFormatted}` : '.');
+
+  } else if(s.type === 'report'){
+    out = `${hasA ? A + ' (' + Y + ') ' : ''}${formattedTitle}`
+        + (formattedContainer ? `, ${formattedContainer}` : '')
+        + (acc ? `, accessed ${acc}.` : '.')
+        + (doiFormatted ? ` ${doiFormatted}` : (urlFormatted ? ` ${urlFormatted}` : ''));
+
+  } else if(s.type === 'news'){
+    const pubDayMonth = (s.date && s.date.length > 4) ? dateOf(s.date) : '';
+    out = `${hasA ? A + ' (' + Y + ') ' : ''}${formattedTitle}, ${formattedContainer}`
+        + (pubDayMonth && pubDayMonth !== Y ? `, ${pubDayMonth}` : '')
+        + (acc ? `, accessed ${acc}.` : '.')
+        + (urlFormatted ? ` ${urlFormatted}` : '');
+
+  } else {
+    out = `${hasA ? A + ' (' + Y + ') ' : ''}${formattedTitle}`
+        + (formattedContainer ? `, ${formattedContainer}` : '')
+        + (acc ? `, accessed ${acc}.` : '.')
+        + (urlFormatted ? ` ${urlFormatted}` : '');
+  }
+
+  const miss = [];
+  if(!s.title) miss.push('tiêu đề'); 
+  if(!A) miss.push('tác giả');
+  
+  return {
+    html: out.trim(), 
+    narr: `${inTextWho} (${Y})`, 
+    paren: `(${inTextWho} ${Y})`, 
+    miss
+  };
+}
+
+const TYPES = [
+  ['webpage','Webpage (Trang web)'],
+  ['journal','Journal article (Tạp chí)'],
+  ['book','Book (Sách)'],
+  ['chapter','Book chapter (Chương sách)'],
+  ['report','Report (Báo cáo)'],
+  ['news','Newspaper article (Báo tin tức)']
+];
+
+const LABELS = {
+  webpage: { title: 'Tiêu đề trang web (In nghiêng)', container: 'Tên website (Chữ thường)', titleHint: 'Mẫu RMIT: Author (Year) <i>Title of webpage</i>, Website Name website...', containerHint: 'Chữ thường, tự động gắn hậu tố website' },
+  journal: { title: 'Tiêu đề bài báo (Nháy đơn, chữ thẳng)', container: 'Tên tạp chí (Journal title - In nghiêng)', titleHint: 'Mẫu RMIT: Author (Year) ‘Article title’, <i>Journal Title</i>, vol(issue):pp.', containerHint: 'In nghiêng tên tạp chí' },
+  book: { title: 'Tên sách (Book title - In nghiêng)', container: '', titleHint: 'Mẫu RMIT: Author (Year) <i>Title of book</i>, Publisher, Place.', containerHint: '' },
+  chapter: { title: 'Tiêu đề chương (Chapter title - Nháy đơn)', container: 'Tên sách chứa chương (Book title - In nghiêng)', titleHint: 'Mẫu RMIT: Author (Year) ‘Chapter title’, in Editor (ed.), <i>Book Title</i>...', containerHint: 'In nghiêng tên cuốn sách' },
+  report: { title: 'Tiêu đề báo cáo (Report title - In nghiêng)', container: 'Tổ chức / Website phát hành (Chữ thường)', titleHint: 'Mẫu RMIT: Author/Org (Year) <i>Title of report</i>, Organisation website...', containerHint: 'Chữ thường' },
+  news: { title: 'Tiêu đề bài báo (Article title - Nháy đơn)', container: 'Tên tờ báo (Newspaper title - In nghiêng)', titleHint: 'Mẫu RMIT: Author (Year) ‘Article title’, <i>Newspaper Name</i>...', containerHint: 'In nghiêng tên tờ báo' }
+};
+
+const FIELDS = ['authors','date','title','container','editors','volume','issue','pages','edition','publisher','place','doi','url','accessed'];
+const today = () => new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+
+let s = {
+  type: 'journal',
+  org: false,
+  authors: '',
+  date: new Date().getFullYear().toString(),
+  title: '',
+  container: '',
+  accessed: today(),
+  url: '',
+  doi: '',
+  volume: '',
+  issue: '',
+  pages: '',
+  edition: '',
+  publisher: '',
+  place: '',
+  editors: ''
+};
+
+let saved = [];
+try{ saved = JSON.parse(localStorage.getItem('rmit-cite-list-v14') || '[]'); }catch(_){}
+
+function toForm(){ 
+  FIELDS.forEach(k => $(k).value = s[k] || '');$('org').checked = !!s.org;
+}
+function fromForm(){ 
+  FIELDS.forEach(k => s[k] = $(k).value); 
+  s.org = $('org').checked;
+}
+
+function updateDynamicLabels() {
+  const meta = LABELS[s.type] || LABELS.webpage;
+  $('titleLab').textContent = meta.title;
+  $('titleHint').textContent = meta.titleHint;
+  $('containerLab').textContent = meta.container;
+  $('containerHint').textContent = meta.containerHint;
+  $('pagesLab').textContent = s.type === 'chapter' ? 'Số trang chương (ví dụ: 303-332)' : 'Trang / Mã bài viết';
+  $('dateLab').textContent = s.type === 'news' ? 'Ngày tháng (2026-07-20) hoặc năm' : 'Năm xuất bản';
+}
+
+function render(){
+  document.querySelectorAll('#types button').forEach(b => b.setAttribute('aria-pressed', b.dataset.t === s.type));
+  document.querySelectorAll('.f[data-t]').forEach(f => f.hidden = !f.dataset.t.split(' ').includes(s.type));
+  updateDynamicLabels();
+  
+  const isInherit = $('fontMode').value === 'inherit';$('customFontOptions').style.display = isInherit ? 'none' : 'flex';
+  
+  if(isInherit){
+    $('formatStatusText').textContent = 'Định dạng chuẩn RMIT Easy Cite • Tự khớp font Docs/Word';
+    $('modeTip').textContent = 'Docs đang dùng font gì sẽ nhận đúng font đó!';
+  } else {
+    const currentFont = $('fontFamilySel').value.split(',')[0].replace(/['"]/g,'');
+    const currentSize = $('fontSizeSel').value;
+    $('formatStatusText').textContent = `${currentFont} ${currentSize}pt • Định dạng chuẩn RMIT`;
+    $('modeTip').textContent = `Ép cứng ${currentFont} ${currentSize}pt`;
+  }
+
+  const r = format(s);
+  $('out').innerHTML = r.html || '<span style="color:var(--muted); font-style:normal;">Dán link hoặc nhập thông tin ở trên để xem trích dẫn chuẩn RMIT.</span>'; 
+  $('narr').innerHTML = r.narr; 
+  $('paren').innerHTML = r.paren;
+  $('warn').hidden = !r.miss.length;
+  $('warn').textContent = r.miss.length ? 'Lưu ý: Chưa có ' + r.miss.join(', ') + ' (có thể điền tay bên dưới).' : '';
+  return r;
+}
+
+function renderList(){
+  const L = $('list');
+  if(!saved.length){ 
+    L.innerHTML = '<p class="empty">Danh sách trống. Bấm "Lưu vào danh sách" ở trên để lưu.</p>'; 
+    $('copyAll').hidden = true; 
+    $('clearAll').hidden = true;
+    return; 
+  }
+  $('copyAll').hidden = false;
+  $('clearAll').hidden = false;
+  saved.sort((a,b) => plain(a.html).replace(/^['"‘]/,'').toLowerCase().localeCompare(plain(b.html).replace(/^['"‘]/,'').toLowerCase()));
+  L.innerHTML = saved.map((x,i) => `
+    <div class="item">
+      <p class="cite">${x.html}</p>
+      <div class="item-actions">
+        <button type="button" data-cp="${i}">Copy</button>
+        <button type="button" data-rm="${i}">Xoá</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function persist(){ try{ localStorage.setItem('rmit-cite-list-v14', JSON.stringify(saved)); }catch(_){} }
+
+function showDone(btn, good){
+  const t = btn.textContent;
+  btn.textContent = good ? '✓ Đã copy!' : 'Lỗi copy';
+  setTimeout(() => btn.textContent = t, 1800);
+}
+
+async function copyToDocsClipboard(itemsArray, btn){
+  const isInherit = $('fontMode').value === 'inherit';
+  const ptSize = parseFloat($('fontSizeSel').value) || 12.0;
+  const fontFamily = $('fontFamilySel').value;
+
+  const fontStyle = isInherit 
+    ? "" 
+    : `font-family:${fontFamily}; font-size:${ptSize}pt;`;
+
+  const paragraphs = itemsArray.map(itemHtml => `
+    <p class="MsoNormal" style="${fontStyle} line-height:150%; margin-top:0pt; margin-bottom:12pt; margin-left:36pt; text-indent:-36pt; text-align:left;">
+      ${itemHtml}
+    </p>
+  `).join('');
+
+  const fullHtml = `
+    <html>
+    <head>
+    <meta charset="utf-8">
+    <style>
+      p, p.MsoNormal {
+        ${fontStyle}
+        line-height: 150%;
+        margin-top: 0pt;
+        margin-bottom: 12pt;
+        margin-left: 36pt;
+        text-indent: -36pt;
+      }
+      i, em {
+        font-style: italic !important;
+      }
+      a {
+        color: #0563C1;
+        text-decoration: underline;
+        font-family: inherit;
+        font-size: inherit;
+      }
+    </style>
+    </head>
+    <body>
+    <!--StartFragment-->
+    ${paragraphs}
+    <!--EndFragment-->
+    </body>
+    </html>
+  `.trim();
+
+  const plainText = itemsArray.map(plain).join('\n\n');
+
+  if (navigator.clipboard && window.ClipboardItem) {
+    try {
+      const blobHtml = new Blob([fullHtml], { type: 'text/html' });
+      const blobText = new Blob([plainText], { type: 'text/plain' });
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          'text/html': blobHtml,
+          'text/plain': blobText
+        })
+      ]);
+      showDone(btn, true);
+      return;
+    } catch(e) {}
+  }
+
+  const onCopy = ev => { 
+    ev.preventDefault(); 
+    ev.clipboardData.setData('text/html', fullHtml); 
+    ev.clipboardData.setData('text/plain', plainText); 
+  };
+  document.addEventListener('copy', onCopy, {once:true});
+  
+  const ta = document.createElement('textarea');
+  ta.value = 'copy';
+  ta.style.cssText = 'position:fixed;left:-9999px;opacity:0';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  
+  let ok = false; 
+  try{ ok = document.execCommand('copy'); }catch(_){}
+  ta.remove();
+  document.removeEventListener('copy', onCopy);
+  
+  if(ok) return showDone(btn, true);
+  
+  try{ 
+    await navigator.clipboard.writeText(plainText); 
+    showDone(btn, true); 
+  }catch(_){ 
+    showDone(btn, false); 
+  }
+}
+
+function setStatus(msg, type='info'){ 
+  const el = $('status');
+  el.className = 'status ' + (type === 'err' ? 'err' : type === 'ok' ? 'ok' : '');
+  if(type === 'loading'){
+    el.innerHTML = '<span class="spinner"></span> ' + esc(msg);
+  } else {
+    el.textContent = msg;
+  }
+}
+
+const stripTags = t => (t || '').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
+
+// Tối ưu hóa phân tích DOI: Fetch song song Crossref và OpenAlex
+async function fetchDoi(doi){
+  const cleanDoi = doi.replace(/^(https?:\/\/(dx\.)?doi\.org\/|doi:\s*)/i, '').trim();
+
+  const fetchCrossref = async () => {
+    const res = await fetch(`https://api.crossref.org/works/${cleanDoi}?mailto=cite@rmit.edu.vn`, {
+      signal: AbortSignal.timeout(3500)
+    });
+    if (!res.ok) throw new Error('Crossref error');
+    const j = await res.json();
+    const r = j.message;
+    const au = r.author || [];
+    const orgOnly = au.length && au.every(a => !a.family);
+    const authorStrings = orgOnly 
+      ? (au[0].name || '') 
+      : au.map(a => a.family ? `${a.family} ${getInitialChars(a.given || '')}` : (a.name || '')).filter(Boolean);
+
+    const pageStr = (r.page || (r['article-number'] ? r['article-number'] : '')).replace(/[–—]/g, '-');
+    const year = ((r.issued || r['published-print'] || r['published-online'] || {})['date-parts'] || [[]])[0][0] || '';
+
+    return {
+      type: /book-chapter|book-section/.test(r.type || '') ? 'chapter' : (/book/.test(r.type || '') ? 'book' : 'journal'),
+      org: !au.length || orgOnly, 
+      authors: orgOnly ? (au[0].name || '') : joinAnd(authorStrings),
+      title: stripTags((r.title || [])[0]), 
+      container: stripTags((r['container-title'] || [])[0]),
+      date: String(year),
+      volume: String(r.volume || ''), 
+      issue: String(r.issue || ''), 
+      pages: pageStr,
+      edition: '', publisher: r.publisher || '', place: '', 
+      doi: `http://dx.doi.org/${cleanDoi}`,
+      url: '', accessed: '', editors: ''
+    };
+  };
+
+  const fetchOpenAlex = async () => {
+    const res = await fetch(`https://api.openalex.org/works/https://doi.org/${cleanDoi}`, {
+      signal: AbortSignal.timeout(3500)
+    });
+    if (!res.ok) throw new Error('OpenAlex error');
+    const data = await res.json();
+    const authorStrings = (data.authorships || []).map(a => {
+      const p = parseSingleName(a.author ? a.author.display_name : '');
+      return p ? `${p.fam} ${p.ini}` : (a.author ? a.author.display_name : '');
+    }).filter(Boolean);
+    const venue = data.primary_location && data.primary_location.source ? data.primary_location.source.display_name : '';
+    const bib = data.biblio || {};
+    const pages = bib.first_page ? (bib.first_page + (bib.last_page ? '-' + bib.last_page : '')) : (cleanDoi.split('/').pop() || '');
+    return {
+      type: 'journal', org: false, 
+      authors: joinAnd(authorStrings), 
+      title: data.title || '', 
+      container: venue,
+      date: String(data.publication_year || ''), 
+      volume: String(bib.volume || ''), 
+      issue: String(bib.issue || ''), 
+      pages: pages,
+      edition: '', publisher: '', place: '', 
+      doi: `http://dx.doi.org/${cleanDoi}`, 
+      editors: '', url: '', accessed: ''
+    };
+  };
+
+  try {
+    return await Promise.any([fetchCrossref(), fetchOpenAlex()]);
+  } catch(e) {
+    return null;
+  }
+}
+
+function parseHtmlMetadata(html, url){
+  try {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const getMeta = (names) => {
+      for(const n of names){
+        const el = doc.querySelector(`meta[property="${n}" i], meta[name="${n}" i]`);
+        if(el && el.getAttribute('content')) return el.getAttribute('content').trim();
+      }
+      return '';
+    };
+
+    let title = getMeta(['og:title', 'twitter:title', 'citation_title', 'title']);
+    if(!title){
+      const tEl = doc.querySelector('title');
+      if(tEl) title = tEl.textContent.trim();
+    }
+    
+    let site = getMeta(['og:site_name', 'citation_journal_title', 'twitter:site', 'publisher']);
+    let author = getMeta(['citation_author', 'author', 'article:author']);
+    let date = getMeta(['citation_publication_date', 'citation_date', 'article:published_time', 'date']);
+    let doi = getMeta(['citation_doi']);
+
+    if(site && title){
+      const re = new RegExp('\\s*[|\\-–—:]\\s*' + site.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '$','i');
+      title = title.replace(re, '').trim();
+    }
+
+    if(title || site){
+      return { 
+        title: title || '', 
+        site: site || '', 
+        author: author || '', 
+        date: date ? date.slice(0,10) : '',
+        doi: doi || ''
+      };
+    }
+  } catch(e) {}
+  return null;
+}
+
+async function fetchWebpage(u){
+  try {
+    const res = await fetch(`https://api.microlink.io/?url=${encodeURIComponent(u)}`, {
+      signal: AbortSignal.timeout(3500)
+    });
+    if(res.ok){
+      const j = await res.json();
+      if(j.data && (j.data.title || j.data.publisher)){
+        const d = j.data;
+        const pub = d.publisher || '';
+        let title = stripTags(d.title || '');
+        if(pub) title = title.replace(new RegExp('\\s*[|\\-–—:]\\s*' + pub.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '$','i'), '').trim();
+        return {
+          type:'webpage', org: !d.author, authors: d.author || pub, title: title, container: pub,
+          date: (d.date || '').slice(0,10) || 'n.d.', doi:'', url: u, accessed: today(),
+          editors:'', volume:'', issue:'', pages:'', edition:'', publisher:'', place:''
+        };
+      }
+    }
+  } catch(e) {}
+
+  try {
+    const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(u)}`, {
+      signal: AbortSignal.timeout(3500)
+    });
+    if(res.ok){
+      const j = await res.json();
+      if(j.contents){
+        const meta = parseHtmlMetadata(j.contents, u);
+        if(meta && (meta.title || meta.site)){
+          const parsedUrl = new URL(u);
+          const domainOrg = parsedUrl.hostname.replace(/^www\./i,'').split('.')[0].toUpperCase();
+          return {
+            type: meta.doi ? 'journal' : 'webpage', 
+            org: !meta.author, 
+            authors: meta.author || meta.site || domainOrg, 
+            title: meta.title,
+            container: meta.site || parsedUrl.hostname.replace(/^www\./i,''), 
+            date: meta.date || 'n.d.',
+            doi: meta.doi ? `http://dx.doi.org/${meta.doi}` : '', 
+            url: u, accessed: today(),
+            editors:'', volume:'', issue:'', pages:'', edition:'', publisher:'', place:''
+          };
+        }
+      }
+    }
+  } catch(e) {}
+
+  return null;
+}
+
+async function handleLookup(query){
+  const q = (query || '').trim();
+  if(!q) return;
+
+  $('go').disabled = true;
+  setStatus('Đang lấy dữ liệu từ máy chủ...', 'loading');
+
+  const doiMatch = q.match(/10\.\d{4,9}\/\S+/);
+  const isUrl = /^https?:\/\//i.test(q);
+
+  try {
+    let result = null;
+
+    if(doiMatch){
+      const cleanDoi = doiMatch[0].replace(/[.,;)\]]+$/, '');
+      result = await fetchDoi(cleanDoi);
+      if(!result && isUrl) result = await fetchWebpage(q);
+      if(!result){
+        result = {
+          type: 'journal',
+          org: false,
+          authors: '',
+          title: '',
+          container: '',
+          date: 'n.d.',
+          volume: '', issue: '', pages: '',
+          doi: `http://dx.doi.org/${cleanDoi}`,
+          url: '', accessed: '', editors: '', edition: '', publisher: '', place: ''
+        };
+      }
+    } else if(isUrl){
+      const embeddedDoi = q.match(/10\.\d{4,9}\/[^?#\s]+/);
+      if(embeddedDoi) result = await fetchDoi(embeddedDoi[0]);
+      if(!result) result = await fetchWebpage(q);
+    }
+
+    if(result){
+      Object.assign(s, result);
+      toForm();
+      render();
+      setStatus('✓ Đã cập nhật thành công theo chuẩn RMIT Easy Cite.', 'ok');
+    } else {
+      if(isUrl){
+        Object.assign(s, {type:'webpage', url:q, accessed: today()});
+        toForm();
+        render();
+        setStatus('Đã điền sẵn URL vào trích dẫn. Bạn hãy hoàn thiện tiêu đề & tác giả.', 'err');
+      } else {
+        setStatus('Không tìm thấy dữ liệu. Hãy kiểm tra lại link hoặc mã DOI.', 'err');
+      }
+    }
+  } catch(err) {
+    if(isUrl){
+      Object.assign(s, {type:'webpage', url:q, accessed: today()});
+      toForm();
+      render();
+    }
+    setStatus('Có lỗi khi kết nối. Đã điền sẵn link, bạn vui lòng kiểm tra lại thông tin.', 'err');
+  } finally {
+    $('go').disabled = false;
+  }
+}
+
+// Bắt sự kiện DÁN (PASTE) bằng preventDefault chống double link
+$('q').addEventListener('paste', e => {
+  e.preventDefault();
+  const pastedText = (e.clipboardData || window.clipboardData)?.getData('text') || '';
+  const clean = pastedText.trim();
+  $('q').value = clean;
+  if(clean){
+    handleLookup(clean);
+  }
+});
+
+$('lookupForm').addEventListener('submit', ev => {
+  ev.preventDefault();
+  handleLookup($('q').value);
+});
+
+$('types').innerHTML = TYPES.map(([k,l]) => `<button type="button" data-t="${k}" aria-pressed="false">${l}</button>`).join('');
+$('types').addEventListener('click', ev => { 
+  const b = ev.target.closest('button'); 
+  if(b){ s.type = b.dataset.t; render(); } 
+});
+
+$('fontMode').addEventListener('change', render);
+$('fontSizeSel').addEventListener('change', render);$('fontFamilySel').addEventListener('change', render);
+
+$('detailsSection').addEventListener('input', () => { fromForm(); render(); });
+
+$('copy').addEventListener('click', () => {
+  copyToDocsClipboard([render().html], $('copy'));
+});
+
+$('copyPlain').addEventListener('click', () => {
+  const plainText = plain(render().html);
+  navigator.clipboard.writeText(plainText).then(() => {
+    const t = $('copyPlain').textContent;
+    $('copyPlain').textContent = '✓ Đã copy text!';
+    setTimeout(() => $('copyPlain').textContent = t, 1500);
+  });
+});
+
+$('copyNarr').addEventListener('click', () => {
+  navigator.clipboard.writeText($('narr').textContent).then(() => {$('copyNarr').textContent = '✓';
+    setTimeout(() => $('copyNarr').textContent = 'Copy', 1200); }); });$('copyParen').addEventListener('click', () => {
+  navigator.clipboard.writeText($('paren').textContent).then(() => {$('copyParen').textContent = '✓';
+    setTimeout(() => $('copyParen').textContent = 'Copy', 1200);
+  });
+});
+
+$('add').addEventListener('click', () => {
+  const h = render().html;
+  if(!saved.some(x => x.html === h)){ 
+    saved.push({html: h}); 
+    persist(); 
+  }
+  renderList();
+});
+
+$('list').addEventListener('click', ev => { 
+  const rmBtn = ev.target.closest('[data-rm]'); 
+  if(rmBtn){ 
+    saved.splice(+rmBtn.dataset.rm, 1); 
+    persist(); 
+    renderList(); 
+    return;
+  }
+  const cpBtn = ev.target.closest('[data-cp]');
+  if(cpBtn){
+    const item = saved[+cpBtn.dataset.cp];
+    if(item) copyToDocsClipboard([item.html], cpBtn);
+  }
+});
+
+$('copyAll').addEventListener('click', () => {
+  copyToDocsClipboard(saved.map(x => x.html), $('copyAll'));
+});
+
+$('clearAll').addEventListener('click', () => {
+  if(confirm('Bạn có chắc muốn xoá toàn bộ danh sách trích dẫn đã lưu?')){
+    saved = [];
+    persist();
+    renderList();
+  }
+});
+
+toForm(); 
+render(); 
+renderList();
+</script>
+</body>
+</html>
